@@ -16,30 +16,23 @@ void System::get_input() {
 
 void System::get_input(string input) {
     string command, parameter;
-    int counter = 0, fileEntries;
+    int counter = 0;
 
-    if (input == "menu")
-        menu();
-    else {
-        for (int i = 0; i < input.size(); i++) {
-            if (command == "create") {
-                command += " disk";
-                i += 5;
-                counter++;
-            }
-            else if (input[i] != ' ' && counter == 0)
-                command += input[i];
-            else if (counter == 1 && input[i] != ' ')
-                parameter += input[i];
-            else if (input[i] == ' ')
-                counter++;
+    for (int i = 0; i < input.size(); i++) {
+        if (command == "create") {
+            command += " disk";
+            i += 5;
+            counter++;
         }
-
-        cout << "Data blocks > ";
-        cin >> fileEntries;
-
-        create_disk(parameter, fileEntries);
+        else if (input[i] != ' ' && counter == 0)
+            command += input[i];
+        else if (counter == 1 && input[i] != ' ')
+            parameter += input[i];
+        else if (input[i] == ' ')
+            counter++;
     }
+
+    redirection(command, parameter);
 }
 
 void System::menu() {
@@ -101,7 +94,41 @@ void System::create_disk(string diskName, int fileEntries) {
     disk.close();
 }
 
+void System::mkdir() {
+
+}
+
 //PRIVATE
+
+void System::redirection(string command, string parameter) {
+    bool _error = false;
+
+    if (command == "menu")
+        menu();
+    else if (command == "create disk") {
+        if (!parameter.empty()) {
+            int fileEntries;
+
+            cout << "Data blocks > ";
+            cin >> fileEntries;
+
+            create_disk(parameter, fileEntries);
+        }
+        else
+            _error = true;
+    }
+    else if (command == "mkdir") {
+        if (!parameter.empty())
+            mkdir();
+        else
+            _error = true;
+    }
+    else
+        cout << command << ": command not found\n\n";
+
+    if (_error)
+        cout << command << ": missing operand\n\n";
+}
 
 void System::view_disk_info(string diskName) {
     system("cls");
