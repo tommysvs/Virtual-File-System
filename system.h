@@ -13,6 +13,14 @@ enum class EntryType {
     DISK, FOLDER, FILE
 };
 
+struct MetaData {
+    char diskName[20];
+    char diskDate[20];
+    int sizeFileEntries;
+    int sizeDataBlock;
+    int bitSize;
+};
+
 struct FileEntry {
     char name[20];
     EntryType type;
@@ -24,8 +32,10 @@ struct FileEntry {
 
 class System {
     public:
+        void get_input();
         void get_input(string);
-        void create_disk(string);
+        void menu();
+        void create_disk(string, int);
         void mkdir();
         void cd();
         void ls();
@@ -33,6 +43,7 @@ class System {
         void importF();
         void exportF();
     private:
+        void view_disk_info(string);
         string get_date();
 };
 

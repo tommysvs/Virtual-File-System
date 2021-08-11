@@ -1,34 +1,133 @@
 #include "system.h"
 
-void System::get_input(string input) {
-    string command, parameter;
-    int counter = 0;
+#define DATABLOCK 4096
 
-    for (int i = 0; i < input.size(); i++) {
-        if (command == "create") {
-            command += " disk";
-            i += 5;
-            counter++;
-        }
-        else if (input[i] != ' ' && counter == 0)
-            command += input[i];
-        else if (counter == 1 && input[i] != ' ')
-            parameter += input[i];
-        else if (input[i] == ' ')
-            counter++;
-    }
+//PUBLIC
 
-    create_disk(parameter);
+void System::get_input() {
+    string text;
+
+    cout << "user:$ ";
+    getline(cin >> ws, text);
+
+    get_input(text);
+    get_input();
 }
 
-void System::create_disk(string parameter) {
-    fstream disk(parameter + ".bin", ios::out | ios::binary | ios::app);
+void System::get_input(string input) {
+    string command, parameter;
+    int counter = 0, fileEntries;
+
+    if (input == "menu")
+        menu();
+    else {
+        for (int i = 0; i < input.size(); i++) {
+            if (command == "create") {
+                command += " disk";
+                i += 5;
+                counter++;
+            }
+            else if (input[i] != ' ' && counter == 0)
+                command += input[i];
+            else if (counter == 1 && input[i] != ' ')
+                parameter += input[i];
+            else if (input[i] == ' ')
+                counter++;
+        }
+
+        cout << "Data blocks > ";
+        cin >> fileEntries;
+
+        create_disk(parameter, fileEntries);
+    }
+}
+
+void System::menu() {
+    system("cls");
+
+    string input;
+    int option;
+
+    cout << "MENU\n\n";
+    cout << "1. View disk info" << endl;
+    cout << "Option > ";
+    cin >> option;
+
+    switch (option) {
+        case 1:
+            system("cls");
+            cout << "Disk name: ";
+            cin >> input;
+
+            view_disk_info(input);
+            break;
+    }
+}
+
+void System::create_disk(string diskName, int fileEntries) {
+    fstream disk(diskName + ".bin", ios::out | ios::binary | ios::app);
     
     if (!disk) {
         cout << "Error: Cannot open disk image.";
         return;
     }
 
+    MetaData metadata;
+    string date = get_date();
+    int c_dn = 0, c_d = 0;
+
+
+    for (int i = 0; i < diskName.size(); i++)
+        metadata.diskName[i] = diskName[i];
+
+    for (int i = diskName.size(); i < 20; i++)
+        metadata.diskName[i] = ' ';
+    
+    for (int i = 0; i < date.size(); i++)
+        metadata.diskDate[i] = date[i];
+
+    for (int i = date.size(); i < 20; i++)
+        metadata.diskDate[i] = ' ';
+
+    metadata.sizeFileEntries = fileEntries;
+    metadata.sizeDataBlock = DATABLOCK;
+    metadata.bitSize = 0;
+
+    disk.seekg(0, ios::beg);
+    disk.write(reinterpret_cast<const char*>(&metadata), sizeof(MetaData));
+
+    cout << "Disk image successfully created!\n\n";
+
+    disk.close();
+}
+
+//PRIVATE
+
+void System::view_disk_info(string diskName) {
+    system("cls");
+    fstream disk(diskName + ".bin", ios::in | ios::binary);
+    
+    if (!disk) {
+        cout << "Error: Cannot open disk.\n\n";
+        return;
+    }
+
+    disk.seekg(0, ios::beg);
+
+    MetaData actual;
+
+    disk.read(reinterpret_cast<char*>(&actual), sizeof(MetaData));
+
+    while (!disk.eof()) {
+        cout << "Disk name: " << actual.diskName << "\n"
+            << "Creation date: " << actual.diskDate << "\n"
+            << "File entries: " << actual.sizeFileEntries << "\n"
+            << "Data blocks: " << actual.sizeDataBlock << " \n"
+            << "Bit size: " << actual.bitSize << " \n";
+        disk.read(reinterpret_cast<char*>(&actual), sizeof(MetaData));
+    }
+
+    cout << "\n";
     disk.close();
 }
 
