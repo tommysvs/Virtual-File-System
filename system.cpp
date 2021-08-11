@@ -32,7 +32,7 @@ void System::get_input(string input) {
             counter++;
     }
 
-    redirection(command, parameter);
+    redirect(command, parameter);
 }
 
 void System::menu() {
@@ -100,7 +100,7 @@ void System::mkdir() {
 
 //PRIVATE
 
-void System::redirection(string command, string parameter) {
+void System::redirect(string command, string parameter) {
     bool _error = false;
 
     if (command == "menu")

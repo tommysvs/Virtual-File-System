@@ -43,7 +43,7 @@ class System {
         void importF();
         void exportF();
     private:
-        void redirection(string, string);
+        void redirect(string, string);
         void view_disk_info(string);
         string get_date();
 };
