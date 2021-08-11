@@ -32,20 +32,20 @@ struct FileEntry {
 
 class System {
     public:
-        void get_input();
-        void get_input(string);
-        void menu();
-        void create_disk(string, int);
-        void mkdir();
-        void cd();
-        void ls();
-        void rm();
-        void import_file();
-        void export_file();
+        static void get_input();
+        static void get_input(string);
+        static void menu();
+        static void create_disk(string, int);
+        static void mkdir();
+        static void cd();
+        static void ls();
+        static void rm();
+        static void import_file();
+        static void export_file();
     private:
-        void redirect(string, string);
-        void view_disk_info(string);
-        string get_date();
+        static void redirect(string, string);
+        static void view_disk_info(string);
+        static string get_date();
 };
 
 #endif
