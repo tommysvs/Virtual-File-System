@@ -94,7 +94,23 @@ void System::create_disk(string diskName, int fileEntries) {
     disk.close();
 }
 
-void System::mkdir() {
+void System::cd() {
+
+}
+
+void System::ls() {
+
+}
+
+void System::rm() {
+
+}
+
+void System::import_file() {
+
+}
+
+void System::export_file() {
 
 }
 

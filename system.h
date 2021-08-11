@@ -40,8 +40,8 @@ class System {
         void cd();
         void ls();
         void rm();
-        void importF();
-        void exportF();
+        void import_file();
+        void export_file();
     private:
         void redirect(string, string);
         void view_disk_info(string);
